@@ -320,7 +320,7 @@ def check_code():
                     new_user = User(
                         phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ', ''),
                         name=name, surname=surname, org=0, second_name=second_name,
-                        status="active", token=token, points=cards_info["balance"], registered=int(time.time()))
+                        status="active", token=token, points=cards_info["points"], registered=int(time.time()))
                     db.session.add(new_user)
                     db.session.commit()
                 else:
@@ -1094,8 +1094,8 @@ def notifications():
                         'id': 1,
                         'time': '10:08',
                         'timestamp': 1681906290,
-                        'title': 'Запись подтверждена',
-                        'description': '3 апреля ждем вас на мойку по адресу...',
+                        'title': 'Приветствуем вас в приложении',
+                        'description': 'Благодарим Вас за регистрацию в приложении сети АЗС НефтьГазТ',
                         'read': 0
                     }
                 ],
@@ -1171,8 +1171,8 @@ def notification():
                 'id': 1,
                 'time': '10:08',
                 'timestamp': 1681906290,
-                'title': 'Запись подтверждена',
-                'description': '3 апреля ждем вас на мойку по адресу...',
+                'title': 'Приветствуем вас в приложении',
+                'description': 'Благодарим Вас за регистрацию в приложении сети АЗС НефтьГазТ',
             }
         ),
         status=200,
