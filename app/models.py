@@ -41,13 +41,13 @@ class User(UserMixin, db.Model):
 class Cars(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
     user_id = db.Column(db.Integer)
-    model = db.Column(db.String(100))
+    brand = db.Column(db.Integer)
+    model = db.Column(db.Integer)
     num = db.Column(db.String(10))
     vin = db.Column(db.String(20))
-    color = db.Column(db.Integer)
+    color = db.Column(db.String(20))
     oil = db.Column(db.Integer)
     petrol_type = db.Column(db.Integer)
-    GSM_type = db.Column(db.Integer)
     ensurance = db.Column(db.DateTime(timezone=True))
     additional = db.Column(db.String(10000))
 
@@ -91,3 +91,16 @@ class Shares(UserMixin, db.Model):
 
 class Stations(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)  # primary keys are required by SQLAlchemy
+
+
+class Brands(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(100))
+    name = db.Column(db.String(100))
+
+
+class Model(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(100))
+    brand = db.Column(db.Integer)
+    name = db.Column(db.String(100))

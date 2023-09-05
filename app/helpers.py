@@ -3,6 +3,20 @@ import requests
 import json
 
 
+def format_phone_number(phone_number):
+    # Удаление всех символов, кроме цифр
+    phone_number = ''.join(filter(str.isdigit, phone_number))
+
+    # Проверка длины номера телефона
+    if len(phone_number) != 11:
+        return phone_number  # Возвращаем исходную строку, если длина некорректна
+
+    # Форматирование номера телефона в виде "7-XXX-XXX-XX-XX"
+    formatted_phone_number = f"7-{phone_number[1:4]}-{phone_number[4:7]}-{phone_number[7:9]}-{phone_number[9:11]}"
+
+    return formatted_phone_number
+
+
 def send_sms(phones, text, total_price=0):
     login = 'InfoDomDev'  # Логин в smsc
     password = 'yBEgupqPBrPK37Z'  # Пароль в smsc
@@ -39,3 +53,25 @@ def send_sms(phones, text, total_price=0):
                 'status': 'ok',
                 'response': answer,
             }
+
+
+def get_user(phone):
+    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    username = "mobile"
+    password = "%#|AqLB{1f"
+    organization_id = "612306662431"
+    department_id = "mobile"
+
+    # Создание заголовков авторизации
+    auth = (username, password)
+    request_data = {
+        "organizationId": organization_id,
+        "departmentId": department_id,
+        "phone": format_phone_number(phone)
+    }
+    # Отправка POST-запроса
+    response = requests.post(f"{base_url}/getClientInfo", json=request_data, auth=auth)
+    if response.status_code != 200:
+        return None
+    else:
+        return response.json()["data"]
