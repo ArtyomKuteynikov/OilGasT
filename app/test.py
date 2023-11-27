@@ -18,8 +18,8 @@ request_data = {
         "departmentId": department_id,
         'goodsId': '93',
         'price': 47.8,
-        'amount': round(round(float(amount) / course) * course, 2),
-        'quantity': round(float(amount) / course),
+        'amount': round(int((float(amount) / course)*100)/100 * course, 2),
+        'quantity': int((float(amount) / course)*100)/100,
         'card': {
             'number': '000000000025',
             'id': '0B98BBC9C4064C5AA974A819060A5DFF'

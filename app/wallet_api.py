@@ -507,8 +507,8 @@ def exchange():
                     "departmentId": department_id,
                     'goodsId': to_,
                     'price': course,
-                    'amount': round(int(float(amount) / course) * course, 2),
-                    'quantity': int(float(amount) / course),
+                    'amount': round(int((float(amount) / course)*100)/100 * course, 2),
+                    'quantity': int((float(amount) / course)*100)/100,
                     'card': {
                         'number': cards_info['number'],
                         'id': cards_info['id']
@@ -566,8 +566,8 @@ def exchange():
                     "departmentId": department_id,
                     'goodsId': to_,
                     'course': course,
-                    'points': (float(amount) // course) * course,
-                    'quantity': float(amount) // course,
+                    'points': round(int((float(amount) / course)*100)/100 * course, 2),
+                    'quantity': int((float(amount) / course)*100)/100,
                     'card': {
                         'number': cards_info['number'],
                         'id': cards_info['id']

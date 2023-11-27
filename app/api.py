@@ -33,6 +33,50 @@ def format_phone_number(phone_number):
     return formatted_phone_number
 
 
+def check_client(phone):
+    phone = format_phone_number(phone)
+    # Установка параметров для тестирования
+    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    username = "mobile"
+    password = "%#|AqLB{1f"
+    organization_id = "612306662431"
+    department_id = "mobile"
+
+    # Создание заголовков авторизации
+    auth = (username, password)
+
+    # Создание JSON-запроса
+    request_data = {
+        "organizationId": organization_id,
+        "departmentId": department_id,
+        "phone": phone
+    }
+
+    # Отправка POST-запроса
+    response = requests.post(f"{base_url}/getClientInfo", json=request_data, auth=auth)
+    if response.status_code == 200:
+        # Получение JSON-данных из ответа
+        response_data = response.json()
+        # Обработка полученных данных
+        client_info = response_data["data"]["client"]
+        name = client_info["lastName"]
+        surname = client_info["firstName"]
+        second_name = client_info["patronymic"]
+        token = generate_password_hash(phone, method='sha256').replace('sha256$', '')
+        if not User.query.filter_by(
+                phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ',
+                                                                                                        '')).first():
+            new_user = User(
+                phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ', ''),
+                name=name, surname=surname, org=0, second_name=second_name,
+                status="active", token=token, registered=int(time.time()))
+            db.session.add(new_user)
+            db.session.commit()
+        return True
+    else:
+        return False
+
+
 @auth_api.route('/api/auth')
 def auth():
     """
@@ -99,7 +143,9 @@ def auth():
             surname = client_info["firstName"]
             second_name = client_info["patronymic"]
             token = generate_password_hash(phone, method='sha256').replace('sha256$', '')
-            if not User.query.filter_by(phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ', '')).first():
+            if not User.query.filter_by(
+                    phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ',
+                                                                                                            '')).first():
                 new_user = User(
                     phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ', ''),
                     name=name, surname=surname, org=0, second_name=second_name,
@@ -180,30 +226,133 @@ def send_code():
             # sender = Gate(SMS_LOGIN, SMS_PASSWORD)
             status = 'accepted;1234'
         else:
-            code = 1234#random.randint(1001, 9999)
+            response = requests.get(
+                f'https://sms.ru/code/call?phone={phone}&ip=-1&api_id={SMS_API}')
+            if response.status_code == 200:
+                status = response.json()["status"]
+                if status == 'OK':
+                    code = response.json()['code']
+                    new_code = Codes(code=code, phone=phone)
+                    db.session.add(new_code)
+                    db.session.commit()
+                    status = 'accepted'  # sender.send_message(phone, f'Ваш код для авторизации в приложении\n{code}', 'SMS DUCKOHT')
+                    return current_app.response_class(
+                        response=json.dumps(
+                            {'result': status,
+                             'status': 'ok'}
+                        ),
+                        status=200,
+                        mimetype='application/json'
+                    )
+                else:
+                    return current_app.response_class(
+                        response=json.dumps(
+                            {'result': status,
+                             'status': 'error'}
+                        ),
+                        status=200,
+                        mimetype='application/json'
+                    )
+            else:
+                return current_app.response_class(
+                    response=json.dumps(
+                        {'result': False,
+                         'status': 'error'}
+                    ),
+                    status=200,
+                    mimetype='application/json'
+                )
+    except Exception as e:
+        return current_app.response_class(
+            response=json.dumps(
+                {'error': f'ERROR: {e}!'}
+            ),
+            status=400,
+            mimetype='application/json'
+        )
+
+
+@auth_api.route('/api/resend-code')
+def resend_code():
+    """
+    ---
+    get:
+      summary: Отправить код подтверждения повторно
+      parameters:
+          - in: query
+            name: phone
+            schema:
+              description: Phone number
+              type: string
+              example: 79526000536
+            description: Номер телефона
+      responses:
+        '200':
+          description: Результат
+          content:
+            application/json:
+              schema:      # Request body contents
+                  type: object
+                  properties:
+                    result:
+                      type: string
+                    status:
+                        type: string
+                  example:   # Sample object
+                    result: Сообщение отправлено
+                    status: ok
+        '400':
+          description: Не передан обязательный параметр
+          content:
+            application/json:
+              schema: ErrorSchema
+      tags:
+        - auth
+    """
+    try:
+        phone = request.args.get('phone').replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(
+            ' ', '')
+        if phone == "791512901271":
+            code = 1234
             new_code = Codes(code=code, phone=phone)
             db.session.add(new_code)
             db.session.commit()
-            sender = Gate(SMS_LOGIN, SMS_PASSWORD)
-            status = 'accepted'#sender.send_message(phone, f'Ваш код для авторизации в приложении\n{code}', 'SMS DUCKOHT')
-        if status.split(';')[0] == 'accepted':
+            # sender = Gate(SMS_LOGIN, SMS_PASSWORD)
+            status = 'accepted;1234'
             return current_app.response_class(
                 response=json.dumps(
-                    {'result': status,
+                    {'result': 'accepted',
                      'status': 'ok'}
                 ),
                 status=200,
                 mimetype='application/json'
             )
         else:
-            return current_app.response_class(
-                response=json.dumps(
-                    {'result': status,
-                     'status': 'error'}
-                ),
-                status=200,
-                mimetype='application/json'
-            )
+            code = random.randint(1001, 9999)
+            new_code = Codes(code=code, phone=phone)
+            db.session.add(new_code)
+            db.session.commit()
+            url = f'https://sms.ru/sms/send?api_id=889303E4-8329-EC51-0FB8-1085C296D2AC&to={phone}&msg=Ваш код для авторизации в приложении\n{code}&json=1'
+            res = requests.get(url)
+            print(res.text)
+            if res.json()["status"] == 'OK':
+                return current_app.response_class(
+                    response=json.dumps(
+                        {'result': 'accepted',
+                         'status': 'ok'}
+                    ),
+                    status=200,
+                    mimetype='application/json'
+                )
+            else:
+                return current_app.response_class(
+                    response=json.dumps(
+                        {'result': res.json()["status"],
+                         'status': 'error'}
+                    ),
+                    status=200,
+                    mimetype='application/json'
+                )
     except Exception as e:
         return current_app.response_class(
             response=json.dumps(
@@ -316,19 +465,26 @@ def check_code():
                 surname = client_info["firstName"]
                 second_name = client_info["patronymic"]
                 token = generate_password_hash(phone, method='sha256').replace('sha256$', '')
-                if not User.query.filter_by(phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ', '')).first():
+                if not User.query.filter_by(
+                        phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ',
+                                                                                                                '')).first():
                     new_user = User(
-                        phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ', ''),
+                        phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ',
+                                                                                                                ''),
                         name=name, surname=surname, org=0, second_name=second_name,
                         status="active", token=token, points=cards_info["points"], registered=int(time.time()))
                     db.session.add(new_user)
                     db.session.commit()
                 else:
-                    token = User.query.filter_by(phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ', '')).first().token
+                    token = User.query.filter_by(
+                        phone=phone.replace('(', '').replace(')', '').replace('-', '').replace('+', '').replace(' ',
+                                                                                                                '')).first().token
             else:
                 token = None
         code = request.args.get('code')
+        print([i.code for i in Codes.query.filter_by(phone=phone).all()])
         if Codes.query.filter_by(phone=phone).first():
+            print([i.code for i in Codes.query.filter_by(phone=phone).all()])
             if Codes.query.filter_by(phone=phone).all()[-1].code == code:
                 return current_app.response_class(
                     response=json.dumps(
@@ -436,7 +592,7 @@ def sign_up():
         org = int(request.args.get('org'))
         if org:
             org_name = request.json.get('org_name')
-        if User.query.filter_by(phone=phone).first():
+        if check_client(phone):  # User.query.filter_by(phone=phone).first():
             return current_app.response_class(
                 response=json.dumps(
                     {'error': f'USER EXIST'}
@@ -444,6 +600,8 @@ def sign_up():
                 status=403,
                 mimetype='application/json'
             )
+        if not check_client(phone) and User.query.filter_by(phone=phone).first():
+            User.query.filter_by(phone=phone).delete()
         token = generate_password_hash(phone, method='sha256').replace('sha256$', '')
         base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
         username = "mobile"
@@ -462,8 +620,8 @@ def sign_up():
             "requestDate": "2023-05-28T10:40:00",
             "client": {
                 "phone": format_phone_number(phone),
-                "lastName": name,
-                "firstName": surname,
+                "lastName": surname,
+                "firstName": name,
                 "patronymic": second_name
             }
         }
