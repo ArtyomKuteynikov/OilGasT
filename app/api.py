@@ -36,7 +36,7 @@ def format_phone_number(phone_number):
 def check_client(phone):
     phone = format_phone_number(phone)
     # Установка параметров для тестирования
-    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
     username = "mobile"
     password = "%#|AqLB{1f"
     organization_id = "612306662431"
@@ -116,7 +116,7 @@ def auth():
             ' ', '')
         phone = format_phone_number(phone)
         # Установка параметров для тестирования
-        base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+        base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
         username = "mobile"
         password = "%#|AqLB{1f"
         organization_id = "612306662431"
@@ -434,7 +434,7 @@ def check_code():
         else:
             phone = format_phone_number(phone)
             # Установка параметров для тестирования
-            base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+            base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
             username = "mobile"
             password = "%#|AqLB{1f"
             organization_id = "612306662431"
@@ -603,7 +603,7 @@ def sign_up():
         if not check_client(phone) and User.query.filter_by(phone=phone).first():
             User.query.filter_by(phone=phone).delete()
         token = generate_password_hash(phone, method='sha256').replace('sha256$', '')
-        base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+        base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
         username = "mobile"
         password = "%#|AqLB{1f"
         organization_id = "612306662431"
@@ -1029,7 +1029,7 @@ def qr():
             )
         phone = format_phone_number(user.phone)
         # Установка параметров для тестирования
-        base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+        base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
         username = "mobile"
         password = "%#|AqLB{1f"
         organization_id = "612306662431"
@@ -1138,7 +1138,7 @@ def loyalty_card():
         )
     phone = format_phone_number(user.phone)
     # Установка параметров для тестирования
-    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
     username = "mobile"
     password = "%#|AqLB{1f"
     organization_id = "612306662431"

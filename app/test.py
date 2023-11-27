@@ -1,7 +1,7 @@
 import requests
 import datetime, time
 
-base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
 username = "mobile"
 password = "%#|AqLB{1f"
 organization_id = "612306662431"

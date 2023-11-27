@@ -122,7 +122,7 @@ def my_balance():
         )
     phone = format_phone_number(user.phone)
     # Установка параметров для тестирования
-    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
     username = "mobile"
     password = "%#|AqLB{1f"
     organization_id = "612306662431"
@@ -251,7 +251,7 @@ def my_liters():
         )
     phone = format_phone_number(user.phone)
     # Установка параметров для тестирования
-    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
     username = "mobile"
     password = "%#|AqLB{1f"
     organization_id = "612306662431"
@@ -412,7 +412,7 @@ def exchange():
         from_ = request.args.get('from')
         to_ = request.args.get('to')
         amount = request.args.get('amount')
-        base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+        base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
         username = "mobile"
         password = "%#|AqLB{1f"
         organization_id = "612306662431"
@@ -691,7 +691,7 @@ def money_course():
      tags:
        - wallet
     '''
-    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
     username = "mobile"
     password = "%#|AqLB{1f"
     organization_id = "612306662431"
@@ -774,7 +774,7 @@ def fuel_course():
        - wallet
     '''
     goodsId = request.args.get('goodsId')
-    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
     username = "mobile"
     password = "%#|AqLB{1f"
     organization_id = "612306662431"
@@ -869,7 +869,7 @@ def fuel_price():
     '''
     goodsId = request.args.get('goodsId')
     amount = request.args.get('amount')
-    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
     username = "mobile"
     password = "%#|AqLB{1f"
     organization_id = "612306662431"
@@ -1008,7 +1008,7 @@ def share_liters():
                 status=405,
                 mimetype='application/json'
             )
-        base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+        base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
         username = "mobile"
         password = "%#|AqLB{1f"
         organization_id = "612306662431"
@@ -1165,7 +1165,7 @@ def share_points():
                 status=405,
                 mimetype='application/json'
             )
-        base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+        base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
         username = "mobile"
         password = "%#|AqLB{1f"
         organization_id = "612306662431"
@@ -1321,7 +1321,7 @@ def history():
             status=403,
             mimetype='application/json'
         )
-    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
     username = "mobile"
     password = "%#|AqLB{1f"
     organization_id = "612306662431"
@@ -1571,7 +1571,7 @@ def add_money():
         )
     phone = format_phone_number(user.phone)
     # Установка параметров для тестирования
-    base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+    base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
     username = "mobile"
     password = "%#|AqLB{1f"
     organization_id = "612306662431"
@@ -1601,7 +1601,7 @@ def add_money():
         result_description = response_data["result"]["description"]
         client_info = response_data["data"]["client"]
         cards_info = response_data["data"]["cards"][0]
-        base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+        base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
         username = "mobile"
         password = "%#|AqLB{1f"
         organization_id = "612306662431"
@@ -1754,7 +1754,7 @@ def buy_liters():
             )
         goodsId = request.args.get('goodsId')
         amount = request.args.get('amount')
-        base_url = "http://80.72.17.245:8282/demoemitent/hs/cards"
+        base_url = "http://94.79.22.45:8282/demoemitent/hs/cards"
         username = "mobile"
         password = "%#|AqLB{1f"
         organization_id = "612306662431"
